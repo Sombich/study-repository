@@ -1,17 +1,24 @@
 package main
 
 import (
+	"context"
 	"fmt"
-	"git-training/feature1"
-	"git-training/feature2"
 	simpleconnection "git-training/simple_connection"
+	simplesql "git-training/simple_sql"
 )
 
 func main() {
-	fmt.Println("main func")
+	ctx, _ := context.WithCancel(context.Background())
+	conn, err := simpleconnection.CreateConnection(ctx)
 
-	feature1.Feature()
-	feature2.Feature2()
+	if err != nil {
+		panic(err)
+	}
 
-	simpleconnection.CheckConnection()
+	if err := simplesql.CreateTable(ctx, conn); err != nil {
+		panic(err)
+	}
+
+	fmt.Println("Таблица в БД была успешно создана!")
+
 }
